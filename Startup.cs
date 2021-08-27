@@ -24,6 +24,8 @@ namespace ExploreCalifornia
         {
             services.AddTransient<FeatureToggles>(x => new FeatureToggles{ DeveloperExceptions = configuration.GetValue<bool>("FeatureToggles:DeveloperException")
             });
+
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -39,6 +41,7 @@ namespace ExploreCalifornia
             app.UseExceptionHandler("/error.html");
 
             if (features.DeveloperExceptions)//my dependency injection is not working
+                //do i need to be developer mode thingy?
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -49,6 +52,11 @@ namespace ExploreCalifornia
                     throw new Exception("ERROR!");
 
                 await next();
+            });
+            //mvc
+            app.UseMvc(routes => 
+            {
+                routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
             });
             //middleware
             app.UseFileServer();
