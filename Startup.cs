@@ -25,7 +25,10 @@ namespace ExploreCalifornia
             services.AddTransient<FeatureToggles>(x => new FeatureToggles{ DeveloperExceptions = configuration.GetValue<bool>("FeatureToggles:DeveloperException")
             });
 
-            services.AddMvc();
+            // services.AddMvc();
+            //https://docs.microsoft.com/en-us/aspnet/core/migration/22-to-30?view=aspnetcore-5.0&tabs=visual-studio#use-mvc-without-endpoint-routing
+            // http://localhost:53934/home/index //!is working!no work!
+            services.AddMvc(options => options.EnableEndpointRouting = false);
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -54,9 +57,7 @@ namespace ExploreCalifornia
                 await next();
             });
             //mvc
-            app.UseMvc(routes => 
-            {
-                routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
+            app.UseMvc(routes => {routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
             });
             //middleware
             app.UseFileServer();
