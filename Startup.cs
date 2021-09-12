@@ -62,7 +62,7 @@ namespace ExploreCalifornia
             });
             //middleware
             app.UseFileServer();
-
+            //when i run just says "hello testing ASP.NET Core MVC" 12/09
         }
     }
 }
