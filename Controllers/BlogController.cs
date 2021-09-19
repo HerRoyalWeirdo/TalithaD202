@@ -10,12 +10,40 @@ namespace ExploreCalifornia.Controllers
     [Route("blog")]
     public class BlogController : Controller
     {
+        //inject instance of BlogDataContext constructor
+        private readonly BlogDataContext _db;
+        public BlogController(BlogDataContext db)
+        {
+            _db = db;
+        }//ctor tab+shift
+
         [Route("")]
         public IActionResult Index()
         {
             //return new ContentResult {Content = "Blog posts" };
             //http://localhost:53934/blog/index
-            return View();
+            //return View();
+
+            //_db.Posts.ToArray() //will take posts from the database - to read out from saved ish
+            var posts = _db.Posts.OrderByDescending(x=>x.Posted).Take(5).ToArray(); //new[]
+            //{
+            //    new Post
+            //    {
+            //        Title = "My blog post",
+            //        Posted = DateTime.Now,
+            //        Author = "Jess Chadwick",
+            //        Body = "This is a great blog post, don't you think?",
+            //    },
+            //    new Post
+            //    {
+            //        Title = "My second blog post",
+            //        Posted = DateTime.Now,
+            //        Author = "Jess Chadwick",
+            //        Body = "This is ANOTHER great blog post, don't you think?",
+            //    },
+            //};
+
+            return View(posts);
         }
 
         [Route("{year:min(2000)}/{month:range(1,12)}/{key}")]
@@ -31,13 +59,16 @@ namespace ExploreCalifornia.Controllers
          //};
          //http://localhost:53934/blog/2016/11/test
          //model binding
-            var post = new Post
-            {
-                Title = "My blah post",
-                Posted = DateTime.Now,
-                Author = "Talitha Mao-Adams",
-                Body = "Don't you think this blah post is cool? ;-)"
-            };
+
+         //for db
+            var post = _db.Posts.FirstOrDefault(x=>x.Key == key);//new Post
+            //{
+
+            //    Title = "My blah post",
+            //    Posted = DateTime.Now,
+            //    Author = "Talitha Mao-Adams",
+            //    Body = "Don't you think this blah post is cool? ;-)"
+            //};
 
             //ViewBag.Title = "My blog post";
             //ViewBag.Posted = DateTime.Now;
@@ -45,5 +76,40 @@ namespace ExploreCalifornia.Controllers
             //ViewBag.Body = "This is a great blog post -_- can't you tell?";
             return View(post);
         }
+
+        [HttpGet, Route("create")]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        //highlight Post and F12 to take to page
+        [HttpPost, Route("create")]
+        public IActionResult Create(Post post)//(CreatePostRequest post) //([Bind("Title", "Body")]Post post)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            post.Author = User.Identity.Name;
+            post.Posted = DateTime.Now;
+
+            //connected to db up top
+            _db.Posts.Add(post);
+            _db.SaveChanges();
+            //SQL Server Object Explorer < Database - Explorecalifornia-Tables- dbo.Posts
+
+            return RedirectToAction("Post", "Blog", new
+            {
+                year = post.Posted.Year,
+                month = post.Posted.Month,
+                key = post.Key
+            });//View();
+        }
+
+        //where the Post class is v
+        //public class CreatePostRequest
+        //{
+        //    public string Title { get; set; }
+        //    public string Body { get; set; }
+        //}
     }
 }

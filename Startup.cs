@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ExploreCalifornia.Models;
+using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExploreCalifornia
 {
@@ -30,7 +28,15 @@ namespace ExploreCalifornia
             //https://docs.microsoft.com/en-us/aspnet/core/migration/22-to-30?view=aspnetcore-5.0&tabs=visual-studio#use-mvc-without-endpoint-routing
             // http://localhost:53934/home/index //!is working!no work!
             services.AddMvc(options => options.EnableEndpointRouting = false);
+
+            //for Db - BlogDataContext
+            services.AddDbContext<BlogDataContext>(options =>
+            {
+                var connString = configuration.GetConnectionString("BlogDataContext");
+                options.UseSqlServer(connString);
+            });
         }
+        //https://www.koskila.net/solving-dbcontextoptionsbuilder-does-not-contain-a-definition-for-usesqlserver/
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
