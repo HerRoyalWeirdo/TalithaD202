@@ -6,13 +6,20 @@
     Layout = "_layout";
 }
 
-<article class="blog-post">
-    <h1>@Model.Title</h1><!--ViewBag.Title-->
-    <div class="details">
-        Posted <span>@Model.Posted</span> by <span>@Model.Author</span> <!--ViewBag.Posted ViewBag.Author-->
-    </div>
-    <div class="content">
-        @Model.Body   <!--ViewBag.Body-->
-    </div>
-</article>
+@await Html.PartialAsync("_Post")
+@*
+    <article class="blog-post">
+        <h1>@*ctrl+alt to mutli select*@@*
+@Html.ActionLink(Model.Title, "Post", "Blog",
+            new { year = Model.Posted.Year, month = Model.Posted.Month, key = Model.Key }
+            );
+@* @Model.Title*@ @*
+    </h1><!--ViewBag.Title-->
+<div class="details">
+    Posted <span>@Model.Posted</span> by <span>@Model.Author</span> <!--ViewBag.Posted ViewBag.Author-->
+</div>
+<div class="content">
+    @Model.Body   <!--ViewBag.Body-->
+</div>
+</article>*@
 <!--http://localhost:53934/blog/2016/11/test-->

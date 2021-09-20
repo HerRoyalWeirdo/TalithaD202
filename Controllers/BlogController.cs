@@ -18,14 +18,16 @@ namespace ExploreCalifornia.Controllers
         }//ctor tab+shift
 
         [Route("")]
-        public IActionResult Index()
+        public IActionResult Index(int page=0)
         {
             //return new ContentResult {Content = "Blog posts" };
             //http://localhost:53934/blog/index
             //return View();
 
             //_db.Posts.ToArray() //will take posts from the database - to read out from saved ish
-            var posts = _db.Posts.OrderByDescending(x=>x.Posted).Take(5).ToArray(); //new[]
+
+            //var posts = _db.Posts.OrderByDescending(x=>x.Posted).Take(5).ToArray(); //new[]
+
             //{
             //    new Post
             //    {
@@ -42,6 +44,26 @@ namespace ExploreCalifornia.Controllers
             //        Body = "This is ANOTHER great blog post, don't you think?",
             //    },
             //};
+            var pageSize = 2;
+            var totalPosts = _db.Posts.Count();
+            var totalPages = totalPosts / pageSize;
+            var previousPage = page - 1;
+            var nextPage = page + 1;
+
+            ViewBag.PreviousPage = previousPage;
+            ViewBag.HasPreviousPage = previousPage >= 0;
+            ViewBag.NextPage = nextPage;
+            ViewBag.HasNextPage = nextPage < totalPages;
+
+            var posts =
+                _db.Posts
+                    .OrderByDescending(x => x.Posted)
+                    .Skip(pageSize * page)
+                    .Take(pageSize)
+                    .ToArray();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return PartialView(posts);
 
             return View(posts);
         }

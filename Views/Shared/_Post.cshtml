@@ -1,0 +1,14 @@
+﻿@inject ExploreCalifornia.Models.FormattingService Format
+@model ExploreCalifornia.Models.Post
+
+
+<article class="blog-post">
+    <h1>@Model.Title</h1><!--ViewBag.Title-->
+    <div class="details">
+        Posted <span>@Format.AsReadDate(Model.Posted)</span> by <span>@Model.Author</span> <!--ViewBag.Posted ViewBag.Author-->
+    </div>@*@Model.Posted.ToString("d")*@
+    <div class="content">
+        @Model.Body   <!--ViewBag.Body-->
+    </div>
+</article>
+<!--http://localhost:53934/blog/2016/11/test-->

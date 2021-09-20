@@ -20,6 +20,9 @@ namespace ExploreCalifornia
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //@inject part for _Post.cshtml
+            services.AddTransient<FormattingService>();
+
             services.AddTransient<FeatureToggles>(x => new FeatureToggles{ 
                 DeveloperExceptions = configuration.GetValue<bool>("FeatureToggles:DeveloperExceptions")
             });
@@ -35,6 +38,7 @@ namespace ExploreCalifornia
                 var connString = configuration.GetConnectionString("BlogDataContext");
                 options.UseSqlServer(connString);
             });
+            services.AddMvc();
         }
         //https://www.koskila.net/solving-dbcontextoptionsbuilder-does-not-contain-a-definition-for-usesqlserver/
 
