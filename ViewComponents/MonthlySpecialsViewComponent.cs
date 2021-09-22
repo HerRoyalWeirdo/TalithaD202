@@ -13,16 +13,18 @@ namespace ExploreCalifornia.ViewComponents
     {
         private readonly BlogDataContext db;
 
-        public IViewComponentResult Invoke()
-        {
-            var specials = db.MonthlySpecials.ToArray();
-            return View();
-                   //"To Do: Show Monthly Specials. ";
-        }
-        //tab + shift after ctor
         public MonthlySpecialsViewComponent(BlogDataContext db)
         {
             this.db = db;
         }
+
+        public IViewComponentResult Invoke()
+        {
+            var specials = db.MonthlySpecials.ToArray();
+            return View(specials);
+                   //"To Do: Show Monthly Specials. ";
+        }
+        //tab + shift after ctor
+        
     }
 }

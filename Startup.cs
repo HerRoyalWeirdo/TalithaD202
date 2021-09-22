@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Microsoft.AspNetCore.Identity;
 using ExploreCalifornia.Models;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,20 @@ namespace ExploreCalifornia
                 var connString = configuration.GetConnectionString("BlogDataContext");
                 options.UseSqlServer(connString);
             });
+            
+            //for Db - IdentityDataContext
+            services.AddDbContext<IdentityDataContext>(options =>
+            {
+                var connString = configuration.GetConnectionString("IdentityDataContext");
+                options.UseSqlServer(connString);
+            });
+
+            //for Identity services
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityDataContext>();
+
+        //parameter 1 all user info, type authorization roll info
+
             services.AddMvc();
         }
         //https://www.koskila.net/solving-dbcontextoptionsbuilder-does-not-contain-a-definition-for-usesqlserver/
@@ -67,6 +82,9 @@ namespace ExploreCalifornia
 
                 await next();
             });
+            //middleware - authorize in blog controller create
+            app.UseAuthentication();
+
             //mvc
             app.UseMvc(routes => {routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
             });

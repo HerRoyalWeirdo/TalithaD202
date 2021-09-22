@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ExploreCalifornia.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExploreCalifornia.Controllers
 {
@@ -12,6 +13,7 @@ namespace ExploreCalifornia.Controllers
     {
         //inject instance of BlogDataContext constructor
         private readonly BlogDataContext _db;
+
         public BlogController(BlogDataContext db)
         {
             _db = db;
@@ -99,12 +101,14 @@ namespace ExploreCalifornia.Controllers
             return View(post);
         }
 
+        [Authorize]
         [HttpGet, Route("create")]
         public IActionResult Create()
         {
             return View();
         }
         //highlight Post and F12 to take to page
+        [Authorize]
         [HttpPost, Route("create")]
         public IActionResult Create(Post post)//(CreatePostRequest post) //([Bind("Title", "Body")]Post post)
         {
